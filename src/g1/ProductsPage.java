@@ -46,6 +46,7 @@ public class ProductsPage{
 	
 	PreparedStatement prt;
 	
+	public boolean isser = false;
 	static int productid_ = 0;
 
 	public JFrame ProductsPage;
