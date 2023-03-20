@@ -145,7 +145,7 @@ public class Login{
 		LoginB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String uname = UserF.getText();
-				String pword = PassF.getText();
+				String pword = String.valueOf(PassF.getPassword());
 				String option = UserType.getSelectedItem().toString();
 				
 				if(uname.equals("")||pword.equals("")||option.equals("Select")) {
@@ -168,12 +168,12 @@ public class Login{
 							if(option.equalsIgnoreCase("Employee")&& s1.equalsIgnoreCase("Employee")) {
 								EmployeePage ep = new EmployeePage ();
 								ep.setVisible(true);
-								frame.setVisible(true);
+								frame.dispose();
 							}	}
 						else {
 							JOptionPane.showMessageDialog((Component) rootPane, "Username or Password is incorrect","Error",1);
 						}
-					}
+					} 
 					catch(Exception ex) {
 						System.out.println(""+ex);
 					}

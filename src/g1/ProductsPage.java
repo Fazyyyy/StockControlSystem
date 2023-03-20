@@ -47,7 +47,7 @@ public class ProductsPage{
 	PreparedStatement prt;
 	
 	public boolean isser = false;
-	static int productid_ = 0;
+	public static Integer productid_ = 0;
 
 	public JFrame ProductsPage;
 	private JTextField ProductID;
@@ -94,8 +94,8 @@ public class ProductsPage{
 					ArrayList<Object> arry = new ArrayList<Object>();
 					
 					int id__ = rs.getInt("ProductID");
-					maxIDD.add(productid_);
 					arry.add(String.format("%06d", id__));
+					maxIDD.add(id__);
 					arry.add(rs.getString("Description"));
 					arry.add(rs.getString("ProductSize"));
 					arry.add(rs.getInt("Quantity"));
@@ -114,7 +114,7 @@ public class ProductsPage{
 		}
 		
 		productid_ = Collections.max(maxIDD);
-		
+		System.out.println("maxIDD=" + productid_);
 			System.out.println("ID=" + productid_ + " ROWCOUNT=" + rowCount);
 		Object[][] mainobj = new Object[arryB.size()][5];
 		

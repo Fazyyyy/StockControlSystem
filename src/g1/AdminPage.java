@@ -72,6 +72,7 @@ public class AdminPage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				UsersPage upage = new UsersPage();
 				upage.setVisible(true);
+				setVisible(false);
 				
 			}
 		});
