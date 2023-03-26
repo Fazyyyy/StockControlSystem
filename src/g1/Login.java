@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.*;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -14,11 +16,14 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import javax.swing.JSeparator;
+import javax.swing.JLayeredPane;
 
 
 public class Login{
@@ -31,6 +36,7 @@ public class Login{
 	private JTextField UserF;
 	private JPasswordField PassF;
 	protected Component rootPane;
+	private ImageIcon login1;
 	
 
 	/**
@@ -64,35 +70,42 @@ public class Login{
 		frame.getContentPane().setBackground(new Color(255, 255, 255));
 		frame.setResizable(false);
 		frame.setTitle("Classic Color Enterprises");
-		frame.setBounds(100, 100, 394, 311);
+		frame.setBounds(100, 100, 396, 472);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.getContentPane().setLayout(null);
 		
+
 		
-		JLabel LoginPage = new JLabel("STOCK CONTROL SYSTEM");
+		JLabel LoginPage = new JLabel("");
+		LoginPage.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\Classic Colors.png"));
 		LoginPage.setHorizontalAlignment(SwingConstants.CENTER);
 		LoginPage.setFont(new Font("Tahoma", Font.BOLD, 20));
-		LoginPage.setBounds(35, 26, 296, 41);
+		LoginPage.setBounds(35, 37, 303, 110);
 		frame.getContentPane().add(LoginPage);
 		
-		JLabel User = new JLabel("USERNAME:");
+		JLabel User_1 = new JLabel("\r\n");
+		User_1.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\usericon.png"));
+		User_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		User_1.setBounds(54, 204, 29, 30);
+		frame.getContentPane().add(User_1);
+		
+		JLabel User = new JLabel("");
+		User.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Username.png"));
 		User.setFont(new Font("Tahoma", Font.BOLD, 14));
-		User.setBounds(21, 81, 92, 30);
+		User.setBounds(87, 206, 113, 30);
 		frame.getContentPane().add(User);
 		
-		JLabel Pass = new JLabel("PASSWORD:");
-		Pass.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Pass.setBounds(21, 122, 92, 30);
-		frame.getContentPane().add(Pass);
 		
-		JLabel UserT = new JLabel("USER TYPE:");
+		JLabel UserT = new JLabel("");
+		UserT.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Select.png"));
 		UserT.setFont(new Font("Tahoma", Font.BOLD, 14));
-		UserT.setBounds(21, 163, 92, 30);
+		UserT.setBounds(90, 312, 92, 30);
 		frame.getContentPane().add(UserT);
 		
 		UserF = new JTextField();
-		UserF.setBounds(123, 81, 211, 30);
+		UserF.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		UserF.setBounds(86, 204, 212, 32);
 		frame.getContentPane().add(UserF);
 		UserF.setColumns(10);
 		UserF.addActionListener(new ActionListener() {
@@ -101,9 +114,20 @@ public class Login{
 				UserF.transferFocus();
 			}
 		});
+		JLabel Pass = new JLabel("");
+		Pass.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\lABEL2.png"));
+		Pass.setFont(new Font("Tahoma", Font.BOLD, 14));
+		Pass.setBounds(90, 265, 92, 21);
+		frame.getContentPane().add(Pass);
+		
+		JLabel PassIcon = new JLabel("\r\n");
+		PassIcon.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\passicon.png"));
+		PassIcon.setFont(new Font("Tahoma", Font.BOLD, 14));
+		PassIcon.setBounds(54, 257, 23, 31);
+		frame.getContentPane().add(PassIcon);
 		
 		PassF = new JPasswordField();
-		PassF.setBounds(123, 122, 211, 30);
+		PassF.setBounds(87, 258, 211, 32);
 		PassF.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e_) {
@@ -113,7 +137,11 @@ public class Login{
 		
 		frame.getContentPane().add(PassF);
 
-		final JButton LoginB = new JButton("LOGIN");
+		final JButton LoginB = new JButton("");
+		LoginB.setBackground(new Color(0,0,0,0));
+		LoginB.setBorderPainted(false);
+		LoginB.setForeground(new Color(255, 255, 255));
+		LoginB.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\LoginButton.png"));
 		frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton");
 
 		frame.getRootPane().getActionMap().put("clickButton",new AbstractAction(){
@@ -129,10 +157,9 @@ public class Login{
 				    });
 		
 		final JComboBox UserType = new JComboBox();
-		UserType.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		UserType.setEditable(true);
+		UserType.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		UserType.setModel(new DefaultComboBoxModel(new String[] {"Select", "Admin", "Employee"}));
-		UserType.setBounds(123, 165, 211, 30);
+		UserType.setBounds(87, 312, 211, 30);
 		UserType.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e_) {
@@ -181,17 +208,25 @@ public class Login{
 				}
 			}
 		});
-		LoginB.setFont(new Font("Tahoma", Font.BOLD, 14));
-		LoginB.setBounds(151, 206, 154, 30);
+		LoginB.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		LoginB.setBounds(130, 353, 130, 41);
 		frame.getContentPane().add(LoginB);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Background.png"));
+		lblNewLabel.setBounds(0, 0, 380, 478);
+		frame.getContentPane().add(lblNewLabel);
+		
+	
+		
 		
 		
 	}
+	
 
 	public void setVisible(boolean b) {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
 

@@ -27,6 +27,7 @@ import javax.swing.event.DocumentListener;
 
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class ProductsPage{
 	private JTextField Price;
 	private JTable ProductTable;
 	private JTextField textField;
+	private JTextField updateT;
 
 	/**
 	 * Launch the application.
@@ -170,9 +172,8 @@ public class ProductsPage{
         ProductsPage.setResizable(false);
 		ProductsPage.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 12));
 		ProductsPage.setTitle("Classic Color Enterprises");
-		ProductsPage.setBounds(100, 100, 737, 468);
+		ProductsPage.setBounds(100, 100, 925, 578);
 		ProductsPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ProductsPage.getContentPane().setLayout(null);
 		ProductsPage.setLocationRelativeTo(null);
 		ProductsPage.setVisible(true);
 		
@@ -225,13 +226,15 @@ public class ProductsPage{
 		Price.setBounds(122, 242, 186, 25);
 		panel.add(Price);
 		
-		JButton Add = new JButton("Add");
+		JButton Add = new JButton("");
+		Add.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Add.png"));
+		Add.setBounds(35, 31, 40, 57);
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddProduct(panel);
 			}
 		});
-		Add.setBounds(89, 15, 89, 41);
+		ProductsPage.getContentPane().setLayout(null);
 		ProductsPage.getContentPane().add(Add);
 		
 		ProductTable = new JTable();
@@ -245,11 +248,12 @@ public class ProductsPage{
 		ProductTable.getColumnModel().getColumn(2).setPreferredWidth(80);
 		ProductTable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		JScrollPane scrollPane= new  JScrollPane(ProductTable);
-		scrollPane.setBounds(10, 58, 701, 366);
+		scrollPane.setBounds(35, 99, 864, 429);
 		ProductsPage.getContentPane().add(scrollPane);
 		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(188, 15, 89, 41);
+		JButton btnDelete = new JButton("");
+		btnDelete.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Delete.png"));
+		btnDelete.setBounds(85, 31, 40, 57);
 		ProductsPage.getContentPane().add(btnDelete);
 		
 		btnDelete.addActionListener(new ActionListener() {
@@ -272,14 +276,14 @@ public class ProductsPage{
 					JOptionPane.showMessageDialog(null, "Table is empty.");
 					
 				}else {
-					JOptionPane.showMessageDialog(null, "Please select only one row to delete.");
+					JOptionPane.showMessageDialog(null, "Please select one product to delete.");
 				}
 			}}});
 		
 		JButton btnBack = new JButton("");
-		btnBack.setBounds(10, 11, 46, 37);
+		btnBack.setBounds(859, 16, 40, 41);
 		btnBack.setForeground(new Color(255, 255, 255));
-		btnBack.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\backarrow-removebg-preview.png"));
+		btnBack.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\337078064_906823977277995_5747373366250644684_n.png"));
 		ProductsPage.getContentPane().add(btnBack);
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -289,11 +293,10 @@ public class ProductsPage{
 				ap.setVisible(true);
 			}
 		});
-		btnBack.setBounds(10, 11, 40, 41);
 		ProductsPage.getContentPane().add(btnBack);
 		
 		textField = new JTextField();
-		textField.setBounds(524, 25, 155, 20);
+		textField.setBounds(744, 68, 155, 20);
 		ProductsPage.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -320,10 +323,59 @@ public class ProductsPage{
 			
 		});
 		
-		JLabel Product_TypeLabel_1 = new JLabel("SEARCH:");
+		JLabel Product_TypeLabel_1 = new JLabel(":");
+		Product_TypeLabel_1.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Search.png"));
+		Product_TypeLabel_1.setBounds(691, 61, 53, 31);
 		Product_TypeLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Product_TypeLabel_1.setBounds(451, 21, 76, 25);
 		ProductsPage.getContentPane().add(Product_TypeLabel_1);
+		
+		updateT = new JTextField();
+		updateT.setColumns(10);
+		updateT.setBounds(431, 68, 155, 20);
+		ProductsPage.getContentPane().add(updateT);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = ProductTable.getSelectedRow();
+				
+				if(selectedRow == -1) {
+					JOptionPane.showMessageDialog(null, "Please select a product.", "Warning", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				int currentQuantity = Integer.valueOf("" + ProductTable.getValueAt(selectedRow, 3));
+				int currentID = Integer.valueOf("" + ProductTable.getValueAt(selectedRow, 0));
+				
+				int increaseAmount = 1;
+				if(!updateT.getText().equals("")) {
+					increaseAmount = Integer.valueOf(updateT.getText());
+				}
+				updateT.setText("");
+				ProductTable.setRowSelectionInterval(selectedRow, 0);
+				
+				int newQuantity = currentQuantity + increaseAmount;
+				
+				ProductTable.setValueAt (newQuantity, selectedRow, 3);
+				
+				try {
+					con = Connections.getConnection();
+					pst = con.createStatement();
+					pst.executeUpdate("UPDATE logindb.products SET Quantity = '" + newQuantity + "' WHERE ProductID = '" + currentID + "';");
+					con.close();
+				}
+				catch(Exception ex) {
+					ex.printStackTrace();
+				}
+				ProductTable.setModel(new DefaultTableModel(
+						getTable(), 
+						new String[] {
+								"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+						}
+					));   
+			}
+		});
+		btnUpdate.setBounds(324, 57, 97, 31);
+		ProductsPage.getContentPane().add(btnUpdate);
 	}
 
      public void setVisible(boolean b) {
