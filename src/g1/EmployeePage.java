@@ -38,6 +38,7 @@ contentPane = new JPanel();
 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 setContentPane(contentPane);
 contentPane.setLayout(null);
+
 JButton btnViewProducts = new JButton("View Products");
 btnViewProducts.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
@@ -50,14 +51,24 @@ btnViewProducts.addActionListener(new ActionListener() {
 btnViewProducts.setFont(new Font("Tahoma", Font.BOLD, 12));
 btnViewProducts.setBounds(49, 87, 277, 35);
 contentPane.add(btnViewProducts);
+
 JLabel lblEmployeePage = new JLabel("EMPLOYEE PAGE");
 lblEmployeePage.setFont(new Font("Tahoma", Font.BOLD, 20));
 lblEmployeePage.setBounds(96, 47, 232, 27);
 contentPane.add(lblEmployeePage);
+
 JButton btnSell = new JButton("Sales");
+btnSell.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		Sales sales = new Sales();
+		sales.setVisible(true);
+		setVisible(false);
+	}
+});
 btnSell.setFont(new Font("Tahoma", Font.BOLD, 12));
 btnSell.setBounds(49, 133, 277, 35);
 contentPane.add(btnSell);
+
 JButton LogOutButton = new JButton("Log Out");
 LogOutButton.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent e) {

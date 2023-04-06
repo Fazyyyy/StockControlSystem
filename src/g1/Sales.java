@@ -5,7 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
+import javax.swing.*;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -15,16 +15,29 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.JTextArea;
 import javax.swing.JSpinner;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Sales {
 
@@ -32,16 +45,18 @@ public class Sales {
 	private JTextField PcodeTF;
 	private JTextField DescTF;
 	private JTextField PriceTF;
-	private JTextField AmountTF;
-	private JTextField textField;
+	private JTextField totalTF;
 	private JTextField PayTF;
 	private JTextField ChangeTF;
 	private JTable table;
-
 	Connection con;
 	PreparedStatement pst;
 	ResultSet rs;
+	DefaultTableModel df;
 	private JTextField PsizeTF;
+	private JTextField QtyTF;
+	private JButton voidB;
+
 	/**
 	 * Launch the application.
 	 */
@@ -58,9 +73,99 @@ public class Sales {
 		});
 	}
 
+	
+	public void purchase(){
+		
+		 int quantity = Integer.parseInt(QtyTF.getText());
+	        double unitPrice = Double.parseDouble(PriceTF.getText());
+
+	        // Calculate the total price and set it in the total price field
+	        double totalPrice = quantity * unitPrice;
+	        String formattedTotalPrice = String.format("%.2f", totalPrice);
+	        
+		df = (DefaultTableModel)table.getModel();
+		df.addRow(new Object[] {
+				
+				PcodeTF.getText(),
+				DescTF.getText(),
+		        PsizeTF.getText(),
+		        QtyTF.getText(),
+		        PriceTF.getText(),
+		        formattedTotalPrice
+		        
+		});
+
+		double sum1 = 0;
+	    for (int i = 0; i < table.getRowCount(); i++) {
+	    	String amountStr = (String) table.getValueAt(i, 5);
+	    	double amount = Double.parseDouble(amountStr);
+	       sum1 += amount;
+	    }
+	    System.out.println("sum1=" + sum1);
+	    String formattedSum1 = String.format("%.2f", sum1);
+	    totalTF.setText(formattedSum1);
+		
+		PcodeTF.setText("");
+		DescTF.setText("");
+        PsizeTF.setText("");
+        QtyTF.setText("");
+        PriceTF.setText("");
+        
+
+}
+
+	public void change() {
+		double total = Double.parseDouble(totalTF.getText());
+		int pay = Integer.parseInt(PayTF.getText());
+		
+		double bal = pay - total;
+		String bal1 = String.format("%.2f", bal);
+		
+		ChangeTF.setText(bal1);
+	}
+	public void savetransaction() {
+		df = (DefaultTableModel)table.getModel();
+		List<String> allStr = new ArrayList<String>();
+		List<Integer> allQuan = new ArrayList<Integer>();
+		List<Integer> allID = new ArrayList<Integer>();
+		float total = 0.00f;
+		
+	     for (int i = 0; i < df.getRowCount(); i++) {
+	    	 int pcode = Integer.parseInt("" + df.getValueAt(i, 0));
+	    	 allID.add(pcode);
+	    	 int quantity = Integer.parseInt("" + df.getValueAt(i, 3));
+	    	 allQuan.add(quantity);
+	    	 total += Float.parseFloat("" + df.getValueAt(i, 5));
+	    	 
+	    	 allStr.add("UPDATE logindb.products SET Quantity = %d WHERE ProductID = %d;");
+	    	 
+	     }
+	     try {
+	    	 con = Connections.getConnection();
+			 Statement pst = con.createStatement();
+			 
+			 for(int j = 0; j< allQuan.size(); j++) {
+				 ResultSet rs = pst.executeQuery("SELECT * FROM logindb.products WHERE ProductID = " + allID.get(j)+";");
+				 rs.next();
+				 int oldQuan = rs.getInt("Quantity");
+				 System.out.println(oldQuan);
+				 
+				 String query = String.format(allStr.get(j), oldQuan - allQuan.get(j), rs.getInt("ProductID"));
+				 System.out.println(allQuan.get(j));
+				 System.out.println(query);
+				 pst.executeUpdate(query);
+			 }
+	    	 
+	     }catch (SQLException e) {
+	 		// TODO Auto-generated catch block
+	 		e.printStackTrace();
+	 	}
+    }
+	
 	/**
 	 * Create the application.
 	 */
+	
 	public Sales() {
 		initialize();
 	}
@@ -71,45 +176,23 @@ public class Sales {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Classic Color Enterprises");
+		frame.setVisible(true);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 973, 574);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(139, 69, 19));
-		panel.setBounds(10, 11, 623, 115);
-		frame.getContentPane().add(panel);
-		panel.setLayout(null);
 		
 		JLabel PCode = new JLabel("Product Code");
-		PCode.setFont(new Font("Tahoma", Font.BOLD, 14));
 		PCode.setBounds(27, 11, 100, 14);
-		panel.add(PCode);
+		PCode.setFont(new Font("Tahoma", Font.BOLD, 14));
+		frame.getContentPane().add(PCode);
 		
-		JLabel Description = new JLabel("Description");
-		Description.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Description.setBounds(148, 11, 85, 14);
-		panel.add(Description);
-		
-		JLabel QuantityL = new JLabel("Quantity");
-		QuantityL.setFont(new Font("Tahoma", Font.BOLD, 14));
-		QuantityL.setBounds(27, 67, 71, 14);
-		panel.add(QuantityL);
-		
-		JLabel lblPrice = new JLabel("Price");
-		lblPrice.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPrice.setBounds(271, 11, 41, 14);
-		panel.add(lblPrice);
-		
-		JLabel lblTotal = new JLabel("Amount");
-		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblTotal.setBounds(386, 11, 100, 14);
-		panel.add(lblTotal);
-		
+
 		PcodeTF = new JTextField();
-		PcodeTF.setBackground(new Color(205, 133, 63));
+		PcodeTF.setBounds(27, 36, 105, 20);
+		PcodeTF.setBackground(new Color(255, 255, 255));
 		PcodeTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -135,6 +218,8 @@ public class Sales {
 					        DescTF.setText(pname.trim());
 					        PriceTF.setText(price.trim());
 					        PsizeTF.setText(prodsize.trim());
+					        QtyTF.requestFocus();
+					       
 					    }
 					
 					}
@@ -146,95 +231,151 @@ public class Sales {
 					}
 			}
 		});
-		PcodeTF.setBounds(27, 36, 105, 20);
-		panel.add(PcodeTF);
+		frame.getContentPane().add(PcodeTF);
 		PcodeTF.setColumns(10);
 		
-		JSpinner QtyTF = new JSpinner();
-		QtyTF.setModel(new SpinnerNumberModel(0, 0, 10000000, 1));
-		QtyTF.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				int price = Integer.parseInt(PriceTF.getText());
-				int qty = Integer.parseInt(QtyTF.getValue().toString());
-				
-				int tot = price * qty;
-				
-				AmountTF.setText(String.valueOf(tot));
-				
-			}
-		});
-		QtyTF.setBounds(27, 92, 105, 20);
-		panel.add(QtyTF);
+		JLabel Description = new JLabel("Description");
+		Description.setBounds(148, 11, 85, 14);
+		Description.setFont(new Font("Tahoma", Font.BOLD, 14));
+		frame.getContentPane().add(Description);
 		
 		DescTF = new JTextField();
-		DescTF.setColumns(10);
 		DescTF.setBounds(148, 36, 105, 20);
-		panel.add(DescTF);
+		DescTF.setColumns(10);
+		frame.getContentPane().add(DescTF);
 		
+		JLabel QuantityL = new JLabel("Quantity");
+		QuantityL.setBounds(27, 67, 71, 14);
+		QuantityL.setFont(new Font("Tahoma", Font.BOLD, 14));
+		frame.getContentPane().add(QuantityL);
+		
+		JButton AddB = new JButton("Add");
+		AddB.setBounds(413, 35, 89, 23);
+		AddB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				purchase();
+				
+		    	
+			}
+		});
+		frame.getContentPane().add(AddB);
+		
+		
+		QtyTF = new JTextField();
+		QtyTF.setBounds(27, 92, 105, 20);
+		QtyTF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					AddB.doClick();
+					PcodeTF.requestFocus();
+				}
+			}
+		});
+		frame.getContentPane().add(QtyTF);
+		QtyTF.setColumns(10);
+	
+		JLabel lblPrice = new JLabel("Price");
+		lblPrice.setBounds(271, 11, 41, 14);
+		lblPrice.setFont(new Font("Tahoma", Font.BOLD, 14));
+		frame.getContentPane().add(lblPrice);
+
 		PriceTF = new JTextField();
-		PriceTF.setColumns(10);
 		PriceTF.setBounds(271, 36, 105, 20);
-		panel.add(PriceTF);
+		PriceTF.setColumns(10);
+		frame.getContentPane().add(PriceTF);
 		
-		AmountTF = new JTextField();
-		AmountTF.setColumns(10);
-		AmountTF.setBounds(386, 36, 105, 20);
-		
-		panel.add(AmountTF);
-		
-		JButton AddBtn = new JButton("Add");
-		AddBtn.setBounds(511, 79, 89, 23);
-		panel.add(AddBtn);
-		
-		
+			
 		JLabel lblProductSize = new JLabel("Product Size");
-		lblProductSize.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblProductSize.setBounds(148, 69, 100, 14);
-		panel.add(lblProductSize);
+		lblProductSize.setFont(new Font("Tahoma", Font.BOLD, 14));
+		frame.getContentPane().add(lblProductSize);
 		
 		PsizeTF = new JTextField();
-		PsizeTF.setColumns(10);
 		PsizeTF.setBounds(148, 92, 105, 20);
-		panel.add(PsizeTF);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(662, 11, 285, 215);
-		frame.getContentPane().add(panel_1);
-		panel_1.setLayout(null);
+		PsizeTF.setColumns(10);
+		frame.getContentPane().add(PsizeTF);
 		
 		JLabel Total = new JLabel("Total");
+		Total.setBounds(781, 23, 48, 14);
 		Total.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Total.setBounds(117, 11, 48, 14);
-		panel_1.add(Total);
+		frame.getContentPane().add(Total);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(41, 36, 207, 20);
-		panel_1.add(textField);
+		totalTF = new JTextField();
+		totalTF.setBounds(699, 49, 207, 20);
+		totalTF.setColumns(10);
+		frame.getContentPane().add(totalTF);
 		
-		JLabel Pay = new JLabel("Amount Received");
+		JTextPane BillP = new JTextPane();
+		BillP.setBounds(656, 218, 291, 276);
+		BillP.setFont(new Font("Times New Roman", Font.BOLD, 11));
+		frame.getContentPane().add(BillP);
+	
+		JButton btnBill = new JButton("Print");
+		btnBill.setBounds(768, 193, 89, 23);
+		btnBill.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				change();
+				savetransaction();
+				BillP.setText("*************************************************\n");
+				BillP.setText(BillP.getText() + "                       Classic Color Enterprises\n");
+				BillP.setText(BillP.getText() + "        A.S Fortuna St., Banilad, Mandaue City 6014\n");
+				BillP.setText(BillP.getText() + "                            Telefax: 238-3899\n");
+				BillP.setText(BillP.getText() + "                  Gerry Glen Y. Saw - Proprietor\n");
+				BillP.setText(BillP.getText() + "************************************************\n");
+				BillP.setText(BillP.getText() + "Description\tSize\tQuantity\tPrice\n");
+				
+				df = (DefaultTableModel)table.getModel();
+				for (int i = 0; i < table.getRowCount(); i++) {
+				
+				String desc = df.getValueAt(i, 1).toString(); 
+				String size = df.getValueAt(i, 2).toString(); 
+				String qty = df.getValueAt(i, 3).toString(); 
+				String price = df.getValueAt(i, 4).toString();
+				
+				
+				BillP.setText(BillP.getText() + desc + "\t" + size + "\t"+ qty +"\t"+ price + "\n");
+				}
+				BillP.setText(BillP.getText() + "************************************************\n");
+				BillP.setText(BillP.getText() + "Total:\t\t\t" + totalTF.getText() + "\n");
+				BillP.setText(BillP.getText() + "Payment Received:\t\t\t" + PayTF.getText() + ".00\n");
+				BillP.setText(BillP.getText() + "Balance:\t\t\t" + ChangeTF.getText() + "\n");
+			}
+			});
+		frame.getContentPane().add(btnBill);
+		
+		
+		
+		JLabel Pay = new JLabel("Payment");
+		Pay.setBounds(768, 81, 71, 14);
 		Pay.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Pay.setBounds(84, 67, 121, 14);
-		panel_1.add(Pay);
+		frame.getContentPane().add(Pay);
 		
 		PayTF = new JTextField();
+		PayTF.setBounds(699, 106, 207, 20);
+		PayTF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				 btnBill.doClick();
+				}
+			}
+		});
 		PayTF.setColumns(10);
-		PayTF.setBounds(41, 92, 207, 20);
-		panel_1.add(PayTF);
+		frame.getContentPane().add(PayTF);
+		
 		
 		JLabel lblChange = new JLabel("Change");
+		lblChange.setBounds(768, 137, 61, 14);
 		lblChange.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblChange.setBounds(117, 123, 61, 14);
-		panel_1.add(lblChange);
+		frame.getContentPane().add(lblChange);
 		
 		ChangeTF = new JTextField();
+		ChangeTF.setBounds(699, 162, 207, 20);
 		ChangeTF.setColumns(10);
-		ChangeTF.setBounds(41, 148, 207, 20);
-		panel_1.add(ChangeTF);
+		frame.getContentPane().add(ChangeTF);
 		
-		JButton btnBill = new JButton("Bill");
-		btnBill.setBounds(99, 179, 89, 23);
-		panel_1.add(btnBill);
+		
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -248,10 +389,40 @@ public class Sales {
 		scrollPane.setBounds(10, 135, 623, 358);
 		frame.getContentPane().add(scrollPane);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(662, 251, 285, 242);
-		frame.getContentPane().add(textArea);
+		voidB = new JButton("Void");
+		voidB.setBounds(512, 35, 89, 23);
+		voidB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				df = (DefaultTableModel)table.getModel();
+				int selectedRow = table.getSelectedRow();
+		        if (selectedRow != -1) {
+		        	int warning = JOptionPane.showConfirmDialog(null, "Are you sure to delete?");
+					if(warning == JOptionPane.YES_OPTION) {
+		            df.removeRow(selectedRow);
+		            double sum1 = 0;
+		    	    for (int i = 0; i < table.getRowCount(); i++) {
+		    	    	String amountStr = (String) table.getValueAt(i, 5);
+		    	    	double amount = Double.parseDouble(amountStr);
+		    	       sum1 += amount;
+		    	    }
+		    	    System.out.println("sum1=" + sum1);
+		    	    String formattedSum1 = String.format("%.2f", sum1);
+		    	    totalTF.setText(formattedSum1);
+					}
+		        }
+			}
+		});
+		frame.getContentPane().add(voidB);
+		
+		
 	
 		
 	}
+
+
+	public void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
