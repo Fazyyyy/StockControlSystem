@@ -3,7 +3,6 @@ package g1;
 import java.awt.EventQueue;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +11,11 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import java.awt.Color;
+import javax.swing.border.LineBorder;
 
 
 public class AdminPage extends JFrame {
@@ -50,11 +54,17 @@ public class AdminPage extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("ADMIN PAGE");
-		lblNewLabel.setBounds(126, 42, 138, 27);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblNewLabel.setForeground(new Color(255, 250, 205));
+		lblNewLabel.setBounds(94, 33, 217, 27);
+		lblNewLabel.setFont(new Font("Segoe UI Black", Font.BOLD, 30));
 		contentPane.add(lblNewLabel);
 		
 		JButton ManageProduct = new JButton("Manage Products");
+		ManageProduct.setBackground(new Color(222, 184, 135));
+		ManageProduct.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(139, 69, 19), 2), 
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+		ManageProduct.setOpaque(true);
 		ManageProduct.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ProductsPage prodpage = new ProductsPage();
@@ -64,10 +74,14 @@ public class AdminPage extends JFrame {
 			}
 		});
 		ManageProduct.setFont(new Font("Tahoma", Font.BOLD, 12));
-		ManageProduct.setBounds(53, 80, 277, 35);
+		ManageProduct.setBounds(10, 82, 173, 35);
 		contentPane.add(ManageProduct);
 		
 		JButton AddEmployee = new JButton("Manage Users");
+		AddEmployee.setBackground(new Color(222, 184, 135));
+		AddEmployee.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(139, 69, 19), 2), 
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
 		AddEmployee.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UsersPage upage = new UsersPage();
@@ -77,10 +91,14 @@ public class AdminPage extends JFrame {
 			}
 		});
 		AddEmployee.setFont(new Font("Tahoma", Font.BOLD, 12));
-		AddEmployee.setBounds(53, 126, 277, 35);
+		AddEmployee.setBounds(10, 128, 173, 35);
 		contentPane.add(AddEmployee);
 		
 		final JButton LogOutButton = new JButton("Log Out");
+		LogOutButton.setBackground(new Color(222, 184, 135));
+		LogOutButton.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(139, 69, 19), 2), 
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
 		LogOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int a = JOptionPane.showConfirmDialog(LogOutButton, "Are you sure?");
@@ -94,9 +112,64 @@ public class AdminPage extends JFrame {
 			}
 		});
 		LogOutButton.setFont(new Font("Tahoma", Font.BOLD, 12));
-		LogOutButton.setBounds(53, 172, 277, 35);
+		LogOutButton.setBounds(73, 217, 233, 35);
 		contentPane.add(LogOutButton);
 		
+		JButton SalesB = new JButton("Sales");
+		SalesB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Sales sales = new Sales();
+				sales.setVisible(true);
+				setVisible(false);
+			}
+		});
+		SalesB.setFont(new Font("Tahoma", Font.BOLD, 12));
+		SalesB.setBorder(BorderFactory.createCompoundBorder(
+
+		                new LineBorder(new Color(139, 69, 19), 2), 
+
+		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+		SalesB.setBackground(new Color(222, 184, 135));
+		SalesB.setBounds(73, 174, 233, 35);
+		contentPane.add(SalesB);
 		
-	}
+		
+		JButton TransactionB = new JButton("Transaction Log");
+		TransactionB.setFont(new Font("Tahoma", Font.BOLD, 12));
+		TransactionB.setBorder(BorderFactory.createCompoundBorder(
+		                new LineBorder(new Color(139, 69, 19), 2), 
+		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+		TransactionB.setBackground(new Color(222, 184, 135));
+		TransactionB.setBounds(201, 128, 173, 35);
+		contentPane.add(TransactionB);
+		
+		JButton InventoryLogB = new JButton("Inventory Log");
+		InventoryLogB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InventoryLog inventorylog = new InventoryLog();
+				inventorylog.setVisible(true);
+				setVisible(false);
+			}
+		});
+		InventoryLogB.setOpaque(true);
+		InventoryLogB.setFont(new Font("Tahoma", Font.BOLD, 12));
+		InventoryLogB.setBorder(BorderFactory.createCompoundBorder(
+		                new LineBorder(new Color(139, 69, 19), 2), 
+		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));		
+		InventoryLogB.setBackground(new Color(222, 184, 135));
+		InventoryLogB.setBounds(201, 82, 173, 35);
+		contentPane.add(InventoryLogB);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\BackgroundAdminPage.png"));
+		lblNewLabel_1.setBounds(0, 0, 384, 299);
+		contentPane.add(lblNewLabel_1);
+		
+	
+		
+		
+		
+		
+		
+}
 }

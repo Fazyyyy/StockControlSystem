@@ -42,7 +42,7 @@ public class UsersPage {
 	
 	PreparedStatement prt;
 	
-	private JFrame frame;
+	private JFrame frmClassicColorEnterprises;
 	private JTextField userTF;
 	private JTextField passTF;
 	private JTextField userTTF;
@@ -57,7 +57,7 @@ public class UsersPage {
 			public void run() {
 				try {
 					UsersPage window = new UsersPage();
-					window.frame.setVisible(true);
+					window.frmClassicColorEnterprises.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -116,11 +116,12 @@ public class UsersPage {
 		};
 	}
 	public UsersPage() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 735, 466);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setVisible(true);
+		frmClassicColorEnterprises = new JFrame();
+		frmClassicColorEnterprises.setTitle("Classic Color Enterprises");
+		frmClassicColorEnterprises.setBounds(100, 100, 735, 466);
+		frmClassicColorEnterprises.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmClassicColorEnterprises.getContentPane().setLayout(null);
+		frmClassicColorEnterprises.setVisible(true);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 2));
@@ -162,12 +163,12 @@ public class UsersPage {
 				AddUser(panel);
 			}
 		});
-		btnAdd.setBounds(131, 11, 89, 41);
-		frame.getContentPane().add(btnAdd);
+		btnAdd.setBounds(10, 11, 89, 41);
+		frmClassicColorEnterprises.getContentPane().add(btnAdd);
 		
 		JButton btnRemove = new JButton("Remove");
-		btnRemove.setBounds(239, 11, 89, 41);
-		frame.getContentPane().add(btnRemove);
+		btnRemove.setBounds(109, 11, 89, 41);
+		frmClassicColorEnterprises.getContentPane().add(btnRemove);
 		btnRemove.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
@@ -204,18 +205,18 @@ public class UsersPage {
 		table.setBounds(10, 63, 699, 344);
 		JScrollPane scrollPane= new  JScrollPane(table);
 		scrollPane.setBounds(10, 58, 701, 366);
-		frame.getContentPane().add(scrollPane);
+		frmClassicColorEnterprises.getContentPane().add(scrollPane);
 		
 		JButton btnBack = new JButton("");
-		btnBack.setBounds(10, 11, 54, 41);
+		btnBack.setBounds(664, 18, 33, 34);
 		btnBack.setForeground(new Color(255, 255, 255));
-		btnBack.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\backarrow-removebg-preview.png"));
-		frame.getContentPane().add(btnBack);
+		btnBack.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\337078064_906823977277995_5747373366250644684_n.png"));
+		frmClassicColorEnterprises.getContentPane().add(btnBack);
 		
 		textField = new JTextField();
 		textField.setColumns(10);
-		textField.setBounds(554, 21, 155, 20);
-		frame.getContentPane().add(textField);
+		textField.setBounds(467, 32, 155, 20);
+		frmClassicColorEnterprises.getContentPane().add(textField);
 
 		((AbstractDocument)textField.getDocument()).addDocumentListener(new DocumentListener() {
 
@@ -241,12 +242,18 @@ public class UsersPage {
 		});
 		
 		JLabel Product_TypeLabel_1 = new JLabel("SEARCH:");
+		Product_TypeLabel_1.setForeground(new Color(255, 250, 240));
 		Product_TypeLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		Product_TypeLabel_1.setBounds(477, 17, 76, 25);
-		frame.getContentPane().add(Product_TypeLabel_1);
+		Product_TypeLabel_1.setBounds(394, 27, 76, 25);
+		frmClassicColorEnterprises.getContentPane().add(Product_TypeLabel_1);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\BackGroundProdPAge.png"));
+		lblNewLabel.setBounds(0, 0, 719, 427);
+		frmClassicColorEnterprises.getContentPane().add(lblNewLabel);
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
+				frmClassicColorEnterprises.dispose();
 				AdminPage ap = new AdminPage();
 				ap.setVisible(true);
 			}

@@ -59,6 +59,7 @@ public class ViewProduct{
 	private JTextField Price;
 	private JTable ProductTable;
 	private JTextField textField;
+	private JLabel lblNewLabel_1;
 
 	/**
 	 * Launch the application.
@@ -196,7 +197,7 @@ public class ViewProduct{
 		JButton btnBack = new JButton("");
 		btnBack.setBounds(859, 16, 40, 41);
 		btnBack.setForeground(new Color(255, 255, 255));
-		btnBack.setIcon(new ImageIcon("C:\\Users\\Johnvir\\Pictures\\Back.jpg"));
+		btnBack.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\337078064_906823977277995_5747373366250644684_n.png"));
 		ViewProduct.getContentPane().add(btnBack);
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -219,6 +220,11 @@ public class ViewProduct{
 		textField.setBounds(660, 26, 193, 31);
 		ViewProduct.getContentPane().add(textField);
 		textField.setColumns(10);
+		
+		lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\BackGroundProdPAge.png"));
+		lblNewLabel_1.setBounds(0, 0, 909, 539);
+		ViewProduct.getContentPane().add(lblNewLabel_1);
 		
 		
 		

@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.JLayeredPane;
+import javax.swing.UIManager;
 
 
 public class Login{
@@ -67,13 +68,14 @@ public class Login{
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.getContentPane().setBackground(new Color(255, 255, 255));
+		frame.getContentPane().setBackground(Color.CYAN);
 		frame.setResizable(false);
 		frame.setTitle("Classic Color Enterprises");
 		frame.setBounds(100, 100, 396, 472);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setBackground(new Color(139, 69, 19));
 		
 
 		
@@ -210,6 +212,7 @@ public class Login{
 		});
 		LoginB.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		LoginB.setBounds(130, 353, 130, 41);
+		LoginB.setOpaque(false);
 		frame.getContentPane().add(LoginB);
 		
 		JLabel lblNewLabel = new JLabel("");
