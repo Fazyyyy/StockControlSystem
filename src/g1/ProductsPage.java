@@ -30,9 +30,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -46,7 +49,7 @@ public class ProductsPage{
 	ResultSet rs;
 	
 	PreparedStatement prt;
-	
+	PreparedStatement prt2;
 	public boolean isser = false;
 	public static Integer productid_ = 0;
 
@@ -96,6 +99,7 @@ public class ProductsPage{
 					ArrayList<Object> arry = new ArrayList<Object>();
 					
 					int id__ = rs.getInt("ProductID");
+					int price_ = rs.getInt("Price");
 					arry.add(String.format("%06d", id__));
 					maxIDD.add(id__);
 					arry.add(rs.getString("Description"));
@@ -158,7 +162,21 @@ public class ProductsPage{
 			con = Connections.getConnection();
 			pst = con.createStatement();
 			pst.executeUpdate("DELETE FROM logindb.products WHERE Description = '" + row + "';");
-
+			int selectedRow = ProductTable.getSelectedRow();
+			String type = "Delete";
+			String desc = ProductTable.getValueAt(selectedRow, 1).toString();
+			String unit= ProductTable.getValueAt(selectedRow, 2).toString();
+			int currentQuantity = Integer.valueOf("" + ProductTable.getValueAt(selectedRow, 3));
+			String price= ProductTable.getValueAt(selectedRow, 4).toString();
+			prt2 = con.prepareStatement("INSERT INTO logindb.inventorylog(Date, Time,Type,Description,Unit, Quantity, Price) VALUES(?,?,?,?,?,?,?)");
+			prt2.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+			prt2.setTime(2, new java.sql.Time(System.currentTimeMillis()));
+			prt2.setString(3, type);
+			prt2.setString(4, desc);
+			prt2.setString(5, unit);
+			prt2.setInt(6, currentQuantity);
+			prt2.setString(7, price);
+			prt2.executeUpdate();
 		   con.close();
 		}
 		catch(Exception ex) {
@@ -182,7 +200,7 @@ public class ProductsPage{
 		panel.setVisible(true);
 		
 
-		JLabel Product_TypeLabel = new JLabel("PRODUCT");
+		JLabel Product_TypeLabel = new JLabel("DESCRIPTION");
 		Product_TypeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		Product_TypeLabel.setBounds(10, 104, 115, 30);
 		panel.add(Product_TypeLabel);
@@ -194,7 +212,7 @@ public class ProductsPage{
 		panel.add(ProductType);
 		
 		
-		JLabel Product_SizeLabel = new JLabel("PRODUCT SIZE");
+		JLabel Product_SizeLabel = new JLabel("UNIT");
 		Product_SizeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		Product_SizeLabel.setBounds(10, 145, 115, 30);
 		panel.add(Product_SizeLabel);
@@ -216,7 +234,7 @@ public class ProductsPage{
 		panel.add(Quantity);
 		
 		
-		JLabel PriceLabel = new JLabel("PRICE");
+		JLabel PriceLabel = new JLabel("UNIT PRICE");
 		PriceLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		PriceLabel.setBounds(10, 227, 89, 50);
 		panel.add(PriceLabel);
@@ -226,22 +244,22 @@ public class ProductsPage{
 		Price.setBounds(122, 242, 186, 25);
 		panel.add(Price);
 		
-		JButton Add = new JButton("");
-		Add.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Add.png"));
-		Add.setBounds(35, 31, 40, 57);
-		Add.addActionListener(new ActionListener() {
+		JButton AddB = new JButton("");
+		AddB.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Add.png"));
+		AddB.setBounds(35, 31, 40, 57);
+		AddB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddProduct(panel);
 			}
 		});
 		ProductsPage.getContentPane().setLayout(null);
-		ProductsPage.getContentPane().add(Add);
+		ProductsPage.getContentPane().add(AddB);
 		
 		ProductTable = new JTable();
 		ProductTable.setModel(new DefaultTableModel(
 			getTable(),
 			new String[] {
-					"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+					"Product Code", "Item Description", "Unit", "Quantity", "Unit Price"
 			}
 		));
 		ProductTable.getColumnModel().getColumn(1).setPreferredWidth(87);
@@ -251,24 +269,26 @@ public class ProductsPage{
 		scrollPane.setBounds(35, 99, 864, 429);
 		ProductsPage.getContentPane().add(scrollPane);
 		
-		JButton btnDelete = new JButton("");
-		btnDelete.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Delete.png"));
-		btnDelete.setBounds(85, 31, 40, 57);
-		ProductsPage.getContentPane().add(btnDelete);
+		JButton DeleteB = new JButton("");
+		DeleteB.setIcon(new ImageIcon("C:\\Users\\PC\\Downloads\\Delete.png"));
+		DeleteB.setBounds(85, 31, 40, 57);
+		ProductsPage.getContentPane().add(DeleteB);
 		
-		btnDelete.addActionListener(new ActionListener() {
+		DeleteB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						DefaultTableModel TableModel = (DefaultTableModel) ProductTable.getModel();
+						
 						if(ProductTable.getSelectedRowCount()== 1) {
 							int warning = JOptionPane.showConfirmDialog(null, "Are you sure to delete?");
 							if(warning == JOptionPane.YES_OPTION) {
 								
 						String value_ = (String) ProductTable.getValueAt(ProductTable.getSelectedRow(), 1);
+						
 						deleteRow(value_);
 						ProductTable.setModel(new DefaultTableModel(
 								getTable(), 
 								new String[] {
-										"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+										"Product Code", "Item Description", "Unit", "Quantity", "Unit Price"
 								}
 							));}
 						}else {
@@ -334,10 +354,11 @@ public class ProductsPage{
 		updateT.setBounds(431, 68, 155, 20);
 		ProductsPage.getContentPane().add(updateT);
 		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.addActionListener(new ActionListener() {
+		JButton UpdateB = new JButton("Update");
+		UpdateB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = ProductTable.getSelectedRow();
+				
 				
 				if(selectedRow == -1) {
 					JOptionPane.showMessageDialog(null, "Please select a product.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -361,6 +382,19 @@ public class ProductsPage{
 					con = Connections.getConnection();
 					pst = con.createStatement();
 					pst.executeUpdate("UPDATE logindb.products SET Quantity = '" + newQuantity + "' WHERE ProductID = '" + currentID + "';");
+					String type = "Update";
+					String desc = ProductTable.getValueAt(selectedRow, 1).toString();
+					String unit= ProductTable.getValueAt(selectedRow, 2).toString();
+					String price= ProductTable.getValueAt(selectedRow, 4).toString();
+					prt2 = con.prepareStatement("INSERT INTO logindb.inventorylog(Date, Time,Type,Description,Unit, Quantity, Price) VALUES(?,?,?,?,?,?,?)");
+					prt2.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+					prt2.setTime(2, new java.sql.Time(System.currentTimeMillis()));
+					prt2.setString(3, type);
+					prt2.setString(4, desc);
+					prt2.setString(5, unit);
+					prt2.setInt(6, increaseAmount);
+					prt2.setString(7, price);
+					prt2.executeUpdate();
 					con.close();
 				}
 				catch(Exception ex) {
@@ -369,13 +403,18 @@ public class ProductsPage{
 				ProductTable.setModel(new DefaultTableModel(
 						getTable(), 
 						new String[] {
-								"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+								"Product Code", "Item Description", "Unit", "Quantity", "Unit Price"
 						}
 					));   
 			}
 		});
-		btnUpdate.setBounds(324, 57, 97, 31);
-		ProductsPage.getContentPane().add(btnUpdate);
+		UpdateB.setBounds(324, 57, 97, 31);
+		ProductsPage.getContentPane().add(UpdateB);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\BackGroundProdPAge.png"));
+		lblNewLabel.setBounds(0, 0, 909, 539);
+		ProductsPage.getContentPane().add(lblNewLabel);
 	}
 
      public void setVisible(boolean b) {
@@ -394,7 +433,7 @@ public class ProductsPage{
  			ProductTable.setModel(new DefaultTableModel(
 					getTable(), 
 					new String[] {
-							"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+							"Product Code", "Item Description", "Unit", "Quantity", "Unit Price"
 					}
 				));
  		}
@@ -437,6 +476,7 @@ public class ProductsPage{
 						prodSize + "','" +
 						quantity + "','" +
 						price + "');";
+                    String type = "Add";
 					try {
 						con = Connections.getConnection();
 						prt = con.prepareStatement("insert into logindb.products values (?, ?, ?, ?, ?);");
@@ -446,6 +486,15 @@ public class ProductsPage{
 						prt.setInt(4, quantity);
 						prt.setFloat(5, price);
 						prt.executeUpdate(query);
+						prt2 = con.prepareStatement("INSERT INTO logindb.inventorylog(Date, Time,Type,Description,Unit, Quantity, Price) VALUES(?,?,?,?,?,?,?)");
+						prt2.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+						prt2.setTime(2, new java.sql.Time(System.currentTimeMillis()));
+						prt2.setString(3, type);
+						prt2.setString(4, prodType);
+						prt2.setString(5, prodSize);
+						prt2.setInt(6, quantity);
+						prt2.setFloat(7, price);
+						prt2.executeUpdate();
 					   con.close();
 
 					}
@@ -467,7 +516,7 @@ public class ProductsPage{
 					ProductTable.setModel(new DefaultTableModel(
 						getTable(),
 						new String[] {
-								"Product Code", "Item Description", "Product Size", "Quantity", "Price"
+								"Product Code", "Item Description", "Unit", "Quantity", "Unit Price"
 						}
 					));
 					break;
