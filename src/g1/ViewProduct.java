@@ -30,6 +30,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.sql.ResultSet;
@@ -97,12 +98,18 @@ public class ViewProduct{
 					ArrayList<Object> arry = new ArrayList<Object>();
 					
 					int id__ = rs.getInt("ProductID");
+					double price_ = rs.getDouble("Price");
+					int quantity_ = rs.getInt("Quantity");
+					 DecimalFormat df = new DecimalFormat("#,##0.00");
+					 DecimalFormat df1 = new DecimalFormat("#,##0");
+				     String formattedPrice = df.format(price_);
+				     String formattedqty = df1.format(quantity_);
 					arry.add(String.format("%06d", id__));
 					maxIDD.add(id__);
 					arry.add(rs.getString("Description"));
 					arry.add(rs.getString("ProductSize"));
-					arry.add(rs.getInt("Quantity"));
-					arry.add(rs.getInt("Price") + ".00");
+					arry.add(formattedqty);
+					arry.add(formattedPrice);
 					
 					arryB.add(arry);
 					

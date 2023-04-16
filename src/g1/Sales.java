@@ -51,11 +51,14 @@ public class Sales {
 	private JTable table;
 	Connection con;
 	PreparedStatement pst;
+	PreparedStatement pst2;
 	ResultSet rs;
 	DefaultTableModel df;
 	private JTextField PsizeTF;
 	private JTextField QtyTF;
 	private JButton voidB;
+	private JTextField Cname;
+	private JTextField CAddress;
 
 	/**
 	 * Launch the application.
@@ -139,10 +142,39 @@ public class Sales {
 	    	 
 	    	 allStr.add("UPDATE logindb.products SET Quantity = %d WHERE ProductID = %d;");
 	    	 
+	    	 
+
 	     }
+	     try {
+	    	 for (int i = 0; i < df.getRowCount(); i++) {
+	     String status = "Sold";
+	     int quantity = Integer.parseInt("" + df.getValueAt(i, 3));
+			String desc = df.getValueAt(i, 1).toString();
+			String unit= df.getValueAt(i, 2).toString();
+			String price= df.getValueAt(i, 4).toString();
+			String amount= df.getValueAt(i, 5).toString();
+			pst2 = con.prepareStatement("INSERT INTO logindb.transactionlog(Date, Time, Customer, Description,Unit, Quantity, Price, Amount, Status) VALUES(?,?,?,?,?,?,?,?, ?)");
+			pst2.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+			pst2.setTime(2, new java.sql.Time(System.currentTimeMillis()));
+			pst2.setString(3, Cname.getText());
+			pst2.setString(4, desc);
+			pst2.setString(5, unit);
+			pst2.setInt(6, quantity);
+			pst2.setString(7, price);
+			pst2.setString(8, amount);
+			pst2.setString(9, status);
+			pst2.executeUpdate();
+
+	    	 }
+	    	 }
+	     catch (SQLException e) {
+		 		// TODO Auto-generated catch block
+		 		e.printStackTrace();
+		 	}
 	     try {
 	    	 con = Connections.getConnection();
 			 Statement pst = con.createStatement();
+			 
 			 
 			 for(int j = 0; j< allQuan.size(); j++) {
 				 ResultSet rs = pst.executeQuery("SELECT * FROM logindb.products WHERE ProductID = " + allID.get(j)+";");
@@ -178,7 +210,7 @@ public class Sales {
 		frame.setTitle("Classic Color Enterprises");
 		frame.setVisible(true);
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 1013, 764);
+		frame.setBounds(100, 100, 1013, 518);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -193,13 +225,13 @@ public class Sales {
 		
 		JLabel PCode = new JLabel("Product Code:");
 		PCode.setForeground(new Color(204, 204, 0));
-		PCode.setBounds(22, 50, 111, 14);
+		PCode.setBounds(22, 141, 111, 14);
 		PCode.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(PCode);
 		
 
 		PcodeTF = new JTextField();
-		PcodeTF.setBounds(143, 49, 207, 20);
+		PcodeTF.setBounds(143, 140, 207, 20);
 		PcodeTF.setBackground(new Color(255, 255, 255));
 		PcodeTF.addKeyListener(new KeyAdapter() {
 			@Override
@@ -244,23 +276,23 @@ public class Sales {
 		
 		JLabel Description = new JLabel("Item \r\nDescription:");
 		Description.setForeground(new Color(204, 204, 0));
-		Description.setBounds(22, 93, 139, 14);
+		Description.setBounds(22, 177, 139, 14);
 		Description.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(Description);
 		
 		DescTF = new JTextField();
-		DescTF.setBounds(143, 92, 207, 20);
+		DescTF.setBounds(143, 176, 207, 20);
 		DescTF.setColumns(10);
 		frame.getContentPane().add(DescTF);
 		
 		JLabel QuantityL = new JLabel("Quantity:");
 		QuantityL.setForeground(new Color(204, 204, 0));
-		QuantityL.setBounds(22, 138, 71, 14);
+		QuantityL.setBounds(22, 217, 71, 14);
 		QuantityL.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(QuantityL);
 		
 		JButton AddB = new JButton("Add");
-		AddB.setBounds(152, 410, 89, 23);
+		AddB.setBounds(54, 418, 89, 23);
 		AddB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				purchase();
@@ -272,7 +304,7 @@ public class Sales {
 		
 		
 		QtyTF = new JTextField();
-		QtyTF.setBounds(143, 137, 207, 20);
+		QtyTF.setBounds(143, 216, 207, 20);
 		QtyTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -287,56 +319,64 @@ public class Sales {
 	
 		JLabel lblPrice = new JLabel("Unit Price:");
 		lblPrice.setForeground(new Color(204, 204, 0));
-		lblPrice.setBounds(22, 220, 111, 14);
+		lblPrice.setBounds(22, 284, 111, 14);
 		lblPrice.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(lblPrice);
 
 		PriceTF = new JTextField();
-		PriceTF.setBounds(143, 219, 207, 20);
+		PriceTF.setBounds(143, 283, 207, 20);
 		PriceTF.setColumns(10);
 		frame.getContentPane().add(PriceTF);
 		
 			
 		JLabel lblProductSize = new JLabel("Unit:");
 		lblProductSize.setForeground(new Color(204, 204, 0));
-		lblProductSize.setBounds(22, 180, 100, 14);
+		lblProductSize.setBounds(22, 253, 100, 14);
 		lblProductSize.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(lblProductSize);
 		
 		PsizeTF = new JTextField();
-		PsizeTF.setBounds(143, 179, 207, 20);
+		PsizeTF.setBounds(143, 252, 207, 20);
 		PsizeTF.setColumns(10);
 		frame.getContentPane().add(PsizeTF);
 		
-		JLabel Total = new JLabel("Total");
+		JLabel Total = new JLabel("Total:");
 		Total.setForeground(new Color(204, 204, 0));
-		Total.setBounds(22, 281, 48, 14);
+		Total.setBounds(22, 331, 48, 14);
 		Total.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(Total);
 		
 		totalTF = new JTextField();
-		totalTF.setBounds(143, 280, 207, 20);
+		totalTF.setBounds(143, 325, 207, 20);
 		totalTF.setColumns(10);
 		frame.getContentPane().add(totalTF);
 		
 		JTextPane BillP = new JTextPane();
 		BillP.setBounds(7, 11, 291, 764);
+		BillP.setEditable(false);
 		BillP.setFont(new Font("Times New Roman", Font.BOLD, 11));
 		billframe.getContentPane().add(BillP);
 	
 		JButton btnBill = new JButton("Print");
-		btnBill.setBounds(120, 468, 89, 23);
+		btnBill.setBounds(153, 445, 89, 23);
 		btnBill.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				change();
 				savetransaction();
+				 LocalDateTime currentDateTime = LocalDateTime.now();
+			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			        String formattedDateTime = currentDateTime.format(formatter);
 				BillP.setText("*************************************************\n");
 				BillP.setText(BillP.getText() + "                       Classic Color Enterprises\n");
 				BillP.setText(BillP.getText() + "        A.S Fortuna St., Banilad, Mandaue City 6014\n");
 				BillP.setText(BillP.getText() + "                            Telefax: 238-3899\n");
 				BillP.setText(BillP.getText() + "                  Gerry Glen Y. Saw - Proprietor\n");
 				BillP.setText(BillP.getText() + "************************************************\n");
-				BillP.setText(BillP.getText() + "Description\tSize\tQuantity\tPrice\n");
+				BillP.setText(BillP.getText() + "\t" + formattedDateTime + "\n");
+				BillP.setText(BillP.getText() + "Sold to:" + Cname.getText() + "\n");
+				BillP.setText(BillP.getText() + "Address:" + CAddress.getText() + "\n");
+				BillP.setText(BillP.getText() + "************************************************\n");
+				BillP.setText(BillP.getText() + "Item Description\tUnit   Quantity  Price\n");
 				
 				df = (DefaultTableModel)table.getModel();
 				for (int i = 0; i < table.getRowCount(); i++) {
@@ -347,7 +387,7 @@ public class Sales {
 				String price = df.getValueAt(i, 4).toString();
 				
 				
-				BillP.setText(BillP.getText() + desc + "\t" + size + "\t"+ qty +"\t"+ price + "\n");
+				BillP.setText(BillP.getText() + desc + "\t" + size + "\t"+ qty +"     "+ price + "\n");
 				}
 				BillP.setText(BillP.getText() + "************************************************\n");
 				BillP.setText(BillP.getText() + "Total:\t\t\t" + totalTF.getText() + "\n");
@@ -360,14 +400,14 @@ public class Sales {
 		
 		
 		
-		JLabel Pay = new JLabel("Cash");
+		JLabel Pay = new JLabel("Cash:");
 		Pay.setForeground(new Color(204, 204, 0));
-		Pay.setBounds(22, 313, 71, 14);
+		Pay.setBounds(22, 362, 71, 14);
 		Pay.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(Pay);
 		
 		PayTF = new JTextField();
-		PayTF.setBounds(143, 311, 207, 20);
+		PayTF.setBounds(143, 356, 207, 20);
 		PayTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -380,14 +420,14 @@ public class Sales {
 		frame.getContentPane().add(PayTF);
 		
 		
-		JLabel lblChange = new JLabel("Change");
+		JLabel lblChange = new JLabel("Change:");
 		lblChange.setForeground(new Color(204, 204, 0));
-		lblChange.setBounds(22, 347, 61, 14);
+		lblChange.setBounds(22, 393, 61, 14);
 		lblChange.setFont(new Font("Tahoma", Font.BOLD, 14));
 		frame.getContentPane().add(lblChange);
 		
 		ChangeTF = new JTextField();
-		ChangeTF.setBounds(143, 347, 207, 20);
+		ChangeTF.setBounds(143, 387, 207, 20);
 		ChangeTF.setColumns(10);
 		frame.getContentPane().add(ChangeTF);
 		
@@ -398,20 +438,42 @@ public class Sales {
 			new Object[][] {
 			},
 			new String[] {
-				"Product Code", "Description", "Product Size", "Quantity", "Price", "Amount"
+				"Product Code", "Item Description", "Unit", "Quantity", "Unit Price", "Total Amount"
 			}
 		));
 		JScrollPane scrollPane= new  JScrollPane(table);
-		scrollPane.setBounds(364, 11, 623, 703);
+		scrollPane.setBounds(364, 45, 623, 403);
 		frame.getContentPane().add(scrollPane);
 		
 		voidB = new JButton("Void");
-		voidB.setBounds(22, 389, 89, 23);
+		voidB.setBounds(153, 418, 89, 23);
 		voidB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				df = (DefaultTableModel)table.getModel();
 				int selectedRow = table.getSelectedRow();
 		        if (selectedRow != -1) {
+		        	try { String status = "Voided";
+				     int quantity = Integer.parseInt("" + df.getValueAt(selectedRow, 3));
+						String desc = df.getValueAt(selectedRow, 1).toString();
+						String unit= df.getValueAt(selectedRow, 2).toString();
+						String price= df.getValueAt(selectedRow, 4).toString();
+						String amount1= df.getValueAt(selectedRow, 5).toString();
+						pst2 = con.prepareStatement("INSERT INTO logindb.transactionlog(Date, Time, Customer, Description,Unit, Quantity, Price, Amount, Status) VALUES(?,?,?,?,?,?,?,?, ?)");
+						pst2.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+						pst2.setTime(2, new java.sql.Time(System.currentTimeMillis()));
+						pst2.setString(3, Cname.getText());
+						pst2.setString(4, desc);
+						pst2.setString(5, unit);
+						pst2.setInt(6, quantity);
+						pst2.setString(7, price);
+						pst2.setString(8, amount1);
+						pst2.setString(9, status);
+						pst2.executeUpdate();
+		        	}
+		        	 catch (SQLException ex) {
+		 		 		// TODO Auto-generated catch block
+		 		 		ex.printStackTrace();
+		 		 	}
 		        	int warning = JOptionPane.showConfirmDialog(null, "Are you sure to delete?");
 					if(warning == JOptionPane.YES_OPTION) {
 		            df.removeRow(selectedRow);
@@ -426,6 +488,9 @@ public class Sales {
 		    	    totalTF.setText(formattedSum1);
 					}
 		        }
+
+			    
+
 			}
 		});
 		frame.getContentPane().add(voidB);
@@ -437,14 +502,55 @@ public class Sales {
 		        df.setRowCount(0);
 			}
 		});
-		btnNew.setBounds(261, 376, 89, 23);
+		btnNew.setBounds(250, 418, 89, 23);
 		frame.getContentPane().add(btnNew);
+		
+		JButton Back = new JButton("Back");
+		Back.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				EmployeePage ep = new EmployeePage();
+				ep.setVisible(true);
+				frame.setVisible(false);
+			}
+		});
+		Back.setBounds(898, 11, 89, 23);
+		frame.getContentPane().add(Back);
+		
+		JLabel PCode_1 = new JLabel("Customer's Name:");
+		PCode_1.setForeground(new Color(204, 204, 0));
+		PCode_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		PCode_1.setBounds(22, 64, 139, 14);
+		frame.getContentPane().add(PCode_1);
+		
+		Cname = new JTextField();
+		Cname.setColumns(10);
+		Cname.setBackground(Color.WHITE);
+		Cname.setBounds(157, 63, 193, 20);
+		frame.getContentPane().add(Cname);
+		
+		JLabel PCode_1_1 = new JLabel("Address:");
+		PCode_1_1.setForeground(new Color(204, 204, 0));
+		PCode_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		PCode_1_1.setBounds(22, 103, 139, 14);
+		frame.getContentPane().add(PCode_1_1);
+		
+		CAddress = new JTextField();
+		CAddress.setColumns(10);
+		CAddress.setBackground(Color.WHITE);
+		CAddress.setBounds(157, 102, 193, 20);
+		frame.getContentPane().add(CAddress);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setForeground(new Color(204, 204, 0));
 		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\PC\\Pictures\\BackGroundProdPAge.png"));
-		lblNewLabel_1.setBounds(-3, 0, 960, 539);
+		lblNewLabel_1.setBounds(0, 0, 997, 479);
 		frame.getContentPane().add(lblNewLabel_1);
+		
+		
+		
+	
+		
+		
 		
 		
 	

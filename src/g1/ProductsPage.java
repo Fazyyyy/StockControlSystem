@@ -26,10 +26,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -99,13 +102,20 @@ public class ProductsPage{
 					ArrayList<Object> arry = new ArrayList<Object>();
 					
 					int id__ = rs.getInt("ProductID");
-					int price_ = rs.getInt("Price");
-					arry.add(String.format("%06d", id__));
+					double price_ = rs.getDouble("Price");
+					int quantity_ = rs.getInt("Quantity");
+					 DecimalFormat df = new DecimalFormat("#,##0.00");
+					 DecimalFormat df1 = new DecimalFormat("#,##0");
+					 DecimalFormat df2 = new DecimalFormat("00000");
+				     String formattedPrice = df.format(price_);
+				     String formattedqty = df1.format(quantity_);
+				     String formattedid = df2.format(id__);
+					arry.add(formattedid);
 					maxIDD.add(id__);
 					arry.add(rs.getString("Description"));
 					arry.add(rs.getString("ProductSize"));
-					arry.add(rs.getInt("Quantity"));
-					arry.add(rs.getInt("Price") + ".00");
+					arry.add(formattedqty);
+					arry.add(formattedPrice);
 					
 					arryB.add(arry);
 					
@@ -208,6 +218,14 @@ public class ProductsPage{
 
 		ProductType = new JTextField();
 		ProductType.setColumns(10);
+		ProductType.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					ProductSize.requestFocus();
+				}
+			}
+		});
 		ProductType.setBounds(123, 104, 186, 25);
 		panel.add(ProductType);
 		
@@ -219,6 +237,14 @@ public class ProductsPage{
 
 		ProductSize = new JTextField();
 		ProductSize.setColumns(10);
+		ProductSize.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					Quantity.requestFocus();
+				}
+			}
+		});
 		ProductSize.setBounds(123, 145, 186, 25);
 		panel.add(ProductSize);
 		
@@ -230,6 +256,13 @@ public class ProductsPage{
 
 		Quantity = new JTextField();
 		Quantity.setColumns(10);
+		Quantity.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+			}
+		});
 		Quantity.setBounds(123, 191, 186, 25);
 		panel.add(Quantity);
 		
@@ -471,16 +504,19 @@ public class ProductsPage{
 			if (stat == 0) {
 				if (!(prodType.equals("") && prodSize.equals("") && Quantity.getText().equals("") && Price.getText().equals(""))) {
 					System.out.println("YES");	
-					String query = "insert into logindb.products values ('" + ++productid_ + "','" +
+					DecimalFormat df2 = new DecimalFormat("00000");
+				     String formattedid = df2.format(++productid_);
+					String query = "insert into logindb.products values ('" + formattedid + "','" +
 						prodType + "','" +
 						prodSize + "','" +
 						quantity + "','" +
 						price + "');";
                     String type = "Add";
+
 					try {
 						con = Connections.getConnection();
 						prt = con.prepareStatement("insert into logindb.products values (?, ?, ?, ?, ?);");
-						prt.setInt(1, productid_);
+						prt.setString(1, formattedid);
 						prt.setString(2, prodType);
 						prt.setString(3, prodSize);
 						prt.setInt(4, quantity);
