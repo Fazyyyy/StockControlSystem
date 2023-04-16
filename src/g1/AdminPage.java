@@ -74,7 +74,7 @@ public class AdminPage extends JFrame {
 			}
 		});
 		ManageProduct.setFont(new Font("Tahoma", Font.BOLD, 12));
-		ManageProduct.setBounds(10, 82, 173, 35);
+		ManageProduct.setBounds(78, 71, 233, 35);
 		contentPane.add(ManageProduct);
 		
 		JButton AddEmployee = new JButton("Manage Users");
@@ -91,7 +91,7 @@ public class AdminPage extends JFrame {
 			}
 		});
 		AddEmployee.setFont(new Font("Tahoma", Font.BOLD, 12));
-		AddEmployee.setBounds(10, 128, 173, 35);
+		AddEmployee.setBounds(78, 159, 233, 35);
 		contentPane.add(AddEmployee);
 		
 		final JButton LogOutButton = new JButton("Log Out");
@@ -112,35 +112,24 @@ public class AdminPage extends JFrame {
 			}
 		});
 		LogOutButton.setFont(new Font("Tahoma", Font.BOLD, 12));
-		LogOutButton.setBounds(73, 217, 233, 35);
+		LogOutButton.setBounds(78, 251, 233, 35);
 		contentPane.add(LogOutButton);
-		
-		JButton SalesB = new JButton("Sales");
-		SalesB.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Sales sales = new Sales();
-				sales.setVisible(true);
-				setVisible(false);
-			}
-		});
-		SalesB.setFont(new Font("Tahoma", Font.BOLD, 12));
-		SalesB.setBorder(BorderFactory.createCompoundBorder(
-
-		                new LineBorder(new Color(139, 69, 19), 2), 
-
-		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-		SalesB.setBackground(new Color(222, 184, 135));
-		SalesB.setBounds(73, 174, 233, 35);
-		contentPane.add(SalesB);
 		
 		
 		JButton TransactionB = new JButton("Transaction Log");
+		TransactionB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TransactionLog tl = new TransactionLog();
+				tl.setVisible(true);
+				setVisible(false);
+			}
+		});
 		TransactionB.setFont(new Font("Tahoma", Font.BOLD, 12));
 		TransactionB.setBorder(BorderFactory.createCompoundBorder(
 		                new LineBorder(new Color(139, 69, 19), 2), 
 		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
 		TransactionB.setBackground(new Color(222, 184, 135));
-		TransactionB.setBounds(201, 128, 173, 35);
+		TransactionB.setBounds(78, 205, 233, 35);
 		contentPane.add(TransactionB);
 		
 		JButton InventoryLogB = new JButton("Inventory Log");
@@ -157,7 +146,7 @@ public class AdminPage extends JFrame {
 		                new LineBorder(new Color(139, 69, 19), 2), 
 		                BorderFactory.createEmptyBorder(5, 10, 5, 10)));		
 		InventoryLogB.setBackground(new Color(222, 184, 135));
-		InventoryLogB.setBounds(201, 82, 173, 35);
+		InventoryLogB.setBounds(78, 113, 233, 35);
 		contentPane.add(InventoryLogB);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
